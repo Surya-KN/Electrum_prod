@@ -145,7 +145,7 @@ const EnrollmentPeriodCourses = () => {
           if(course.Code === user.previous_course_id ){
             return 
           }
-          else if (course.Code === '23NHOP607' && user.previous_course_id === '23NHOP607'){
+          else if (course.Code === '23NHOP608' && user.previous_course_id === '23NHOP607'){
             return (
               <div
                 key={course.Id}
@@ -196,7 +196,7 @@ const EnrollmentPeriodCourses = () => {
               </div>
             )
           }
-          else if (course.Code === '23NHOP611' && user.previous_course_id === '23NHOP611'){
+          else if (course.Code === '23NHOP611' && user.previous_course_id === '23NHOP614'){
             return (
               <div
                 key={course.Id}
@@ -298,7 +298,7 @@ const EnrollmentPeriodCourses = () => {
               </div>
             )
           }
-          else if (course.Code === '23NHOP706' && !user.userId.includes("EC")){
+          else if (course.Code === '23NHOP606' && !user.userId.includes("EC")){
             return (
               <div
                 key={course.Id}
