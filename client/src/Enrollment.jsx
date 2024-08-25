@@ -12,11 +12,14 @@ const EnrollmentPeriodCourses = () => {
   const [error, setError] = useState(null);
   const [enrollingCourse, setEnrollingCourse] = useState(null);
   const [enrolled, setEnrolled] = useState(null);
+  cont navigate = useNavigate();
 
   useEffect(() => {
     console.log( user)
-    if (user.userId) {
+    if (user && user.userId) {
       fetchCourses();
+    } else {
+      navigate("/login");
     }
 
   }, []);
@@ -28,7 +31,7 @@ const EnrollmentPeriodCourses = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8000/session/${sessionName}`,
+        `http://35.154.39.136:8000/session/${sessionName}`,
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -50,7 +53,7 @@ const EnrollmentPeriodCourses = () => {
   const checkEnrollmentStatus = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/session/${sessionName}/checkenrollment/${user.userId}`,
+        `http://35.154.39.136:8000/session/${sessionName}/checkenrollment/${user.userId}`,
       );
       if (!response.ok) {
         throw new Error("Failed to check enrollment status");
@@ -67,7 +70,7 @@ const EnrollmentPeriodCourses = () => {
 
   useEffect(() => {
     if (courses.length > 0) {
-      const ws = new WebSocket(`ws://localhost:8000/session/ws/${sessionName}`);
+      const ws = new WebSocket(`ws://35.154.39.136:8000/session/ws/${sessionName}`);
 
       ws.onopen = () => {
         console.log("WebSocket Connected");
@@ -100,7 +103,7 @@ const EnrollmentPeriodCourses = () => {
     setEnrolled(courseCode)
     try {
       const response = await fetch(
-        `http://localhost:8000/session/${sessionName}/enroll`,
+        `http://35.154.39.136:8000/session/${sessionName}/enroll`,
         {
           method: "POST",
           headers: {
