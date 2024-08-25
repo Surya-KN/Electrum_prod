@@ -16,7 +16,7 @@ const DownloadSession = () => {
   const fetchSessions = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/session");
+      const response = await fetch("http://35.154.39.136:8000/session");
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -33,7 +33,7 @@ const DownloadSession = () => {
   const handleDownload = async (sessionName) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/session/${sessionName}/excel`,
+        `http://35.154.39.136:8000/session/${sessionName}/excel`,
         {
           method: "GET",
           headers: {

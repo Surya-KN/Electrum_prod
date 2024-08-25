@@ -50,7 +50,7 @@ const CreateSessionForm = () => {
     formData.append("data", JSON.stringify(sessionData));
 
     try {
-      const response = await fetch("http://localhost:8000/session", {
+      const response = await fetch("http://35.154.39.136:8000/session", {
         method: "POST",
         body: formData,
       });

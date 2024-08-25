@@ -1,0 +1,45 @@
+services:
+  frontend:
+    build: client
+    image: suryakn/electrum-frontend-prod
+    ports:
+      - 5173:5173
+    depends_on:
+      - backend
+
+  backend:
+    build: server
+    image: suryakn/electrum-backend-prod
+    ports:
+      - 8000:8000
+    environment:
+      - DB_URL=postgres://postgres:postgres@db:5432/electrumDB
+      - REDIS_URL=redis-db:6379
+
+    networks:
+      - electrum
+    depends_on:
+      - db
+      - redis-db
+
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - electrum
+    environment:
+      - POSTGRES_DB=electrumDB
+      - POSTGRES_PASSWORD=postgres
+
+  redis-db:
+    image: redis
+    restart: always
+    networks:
+      - electrum
+
+volumes:
+  db-data:
+networks:
+  electrum:
