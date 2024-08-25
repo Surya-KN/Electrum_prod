@@ -14,10 +14,11 @@ const EnrollmentPeriodCourses = () => {
   const [enrolled, setEnrolled] = useState(null);
 
   useEffect(() => {
-    console.log(user);
+    console.log( user)
     if (user.userId) {
       fetchCourses();
     }
+
   }, []);
   useEffect(() => {
     checkEnrollmentStatus();
@@ -27,7 +28,7 @@ const EnrollmentPeriodCourses = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://35.154.39.136:8000/session/${sessionName}`
+        `http://localhost:8000/session/${sessionName}`,
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -37,7 +38,7 @@ const EnrollmentPeriodCourses = () => {
         data.courses.map((course) => ({
           ...course,
           availableSeats: course.Seats,
-        }))
+        })),
       );
       setLoading(false);
     } catch (error) {
@@ -49,26 +50,24 @@ const EnrollmentPeriodCourses = () => {
   const checkEnrollmentStatus = async () => {
     try {
       const response = await fetch(
-        `http://35.154.39.136:8000/session/${sessionName}/checkenrollment/${user.userId}`
+        `http://localhost:8000/session/${sessionName}/checkenrollment/${user.userId}`,
       );
       if (!response.ok) {
         throw new Error("Failed to check enrollment status");
       }
       const data = await response.json();
-      if (data.enrolled) {
-        setEnrolled(data.coursecode);
+      if(data.enrolled){
+        setEnrolled(data.coursecode)
       }
     } catch (error) {
       setError("Failed to check enrollment status");
       toast.error("Failed to check enrollment status.");
     }
-  };
+};
 
   useEffect(() => {
     if (courses.length > 0) {
-      const ws = new WebSocket(
-        `ws://35.154.39.136:8000/session/ws/${sessionName}`
-      );
+      const ws = new WebSocket(`ws://localhost:8000/session/ws/${sessionName}`);
 
       ws.onopen = () => {
         console.log("WebSocket Connected");
@@ -80,9 +79,9 @@ const EnrollmentPeriodCourses = () => {
           prevCourses.map((course) => ({
             ...course,
             availableSeats: parseInt(
-              data[course.Code] || course.availableSeats
+              data[course.Code] || course.availableSeats,
             ),
-          }))
+          })),
         );
       };
 
@@ -98,10 +97,10 @@ const EnrollmentPeriodCourses = () => {
 
   const handleEnroll = async (courseCode) => {
     setEnrollingCourse(courseCode);
-    setEnrolled(courseCode);
+    setEnrolled(courseCode)
     try {
       const response = await fetch(
-        `http://35.154.39.136:8000/session/${sessionName}/enroll`,
+        `http://localhost:8000/session/${sessionName}/enroll`,
         {
           method: "POST",
           headers: {
@@ -111,7 +110,7 @@ const EnrollmentPeriodCourses = () => {
             id: user.userId,
             course: courseCode,
           }),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -161,91 +160,78 @@ const EnrollmentPeriodCourses = () => {
             <div>
               <h2 className="text-lg font-semibold">Enrollment Status</h2>
               <p className="mt-1">
-                You are already enrolled in course{" "}
+                You have been enrolled to course{" "}
                 <span className="font-bold">{enrolled}</span>.
               </p>
             </div>
           </div>
         </div>
       )}
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {courses.map((course) => {
-          let shouldShowCourse = true;
+             let shouldShowCourse = true;
 
-          // Check conditions
-          if (
-            course.Code === "23NHOP608" &&
-            user?.previous_course_id !== "23NHOP607"
-          ) {
-            shouldShowCourse = false;
-          } else if (
-            course.Code === "23NHOP611" &&
-            user?.previous_course_id !== "23NHOP614"
-          ) {
-            shouldShowCourse = false;
-          } else if (
-            course.Code === "23NHOP604" &&
-            user?.userId?.includes("ME")
-          ) {
-            shouldShowCourse = false;
-          } else if (
-            course.Code === "23NHOP606" &&
-            user?.userId?.includes("EC")
-          ) {
-            shouldShowCourse = false;
-          }
-          return shouldShowCourse ? (
-            <div
-              key={course.Id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-indigo-100"
-            >
-              <div className="p-6">
-                <h2 className="text-xl font-semibold mb-2 text-indigo-700">
-                  {course.Name}
-                </h2>
-                <p className="text-gray-600 mb-1">Course Code: {course.Code}</p>
-                <p className="text-gray-600 mb-4">
-                  Department: {course.Department}
-                </p>
-                <div className="mb-4">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium text-gray-700">
-                      Available Seats:
-                    </span>
-                    <span className="text-sm font-medium text-indigo-600">
-                      {course.availableSeats} / {course.Seats}
-                    </span>
+             // Check conditions
+             if (course.Code ===  user?.previous_course_id) {
+               shouldShowCourse = false;
+            } else if (course.Code === '23NHOP708' && user?.previous_course_id !== '23NHOP707') {
+                shouldShowCourse = false;
+             } else if (course.Code === '23NHOP714' && user?.previous_course_id !== '23NHOP711') {
+               shouldShowCourse = false;
+             } else if (course.Code === '23NHOP704' && user?.userId?.includes("ME")) {
+               shouldShowCourse = false;
+             } else if (course.Code === '23NHOP706' && user?.userId?.includes("EC")) {
+               shouldShowCourse = false;
+             }
+             return shouldShowCourse ? (
+              <div
+                key={course.Id}
+                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-indigo-100"
+              >
+                <div className="p-6">
+                  <h2 className="text-xl font-semibold mb-2 text-indigo-700">
+                    {course.Name.split("(")[0].trim()}
+                  </h2>
+                  <p className="text-gray-600 mb-1">Course Code: {course.Code}</p>
+                  <p className="text-gray-600 mb-4">
+                    Slot: <span className="text-black font-semibold">{course.Name.match(/\(([^)]+)\)/)[1]}</span>
+                  </p>
+                  <div className="mb-4">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-sm font-medium text-gray-700">
+                        Available Seats:
+                      </span>
+                      <span className="text-sm font-medium text-indigo-600">
+                        {course.availableSeats} / {course.Seats}
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                      <div
+                        className="bg-indigo-600 h-2.5 rounded-full transition-all duration-500 ease-in-out"
+                        style={{
+                          width: `${(course.availableSeats / course.Seats) * 100}%`,
+                        }}
+                      ></div>
+                    </div>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div
-                      className="bg-indigo-600 h-2.5 rounded-full transition-all duration-500 ease-in-out"
-                      style={{
-                        width: `${(course.availableSeats / course.Seats) * 100}%`,
-                      }}
-                    ></div>
-                  </div>
+                  <button
+                    className="w-full bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                    onClick={() => handleEnroll(course.Code)}
+                    disabled={
+                      enrollingCourse === course.Code || course.availableSeats === 0 || enrolled !== null
+                    }
+                  >
+                    {enrollingCourse === course.Code
+                      ? "Enrolling..."
+                      : enrolled === course.Code
+                        ? "Enrolled"
+                        : course.availableSeats === 0
+                          ? "Full"
+                          : "Enroll"}
+                  </button>
                 </div>
-                <button
-                  className="w-full bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
-                  onClick={() => handleEnroll(course.Code)}
-                  disabled={
-                    enrollingCourse === course.Code ||
-                    course.availableSeats === 0 ||
-                    enrolled !== null
-                  }
-                >
-                  {enrollingCourse === course.Code
-                    ? "Enrolling..."
-                    : enrolled === course.Code
-                      ? "Enrolled"
-                      : course.availableSeats === 0
-                        ? "Full"
-                        : "Enroll"}
-                </button>
               </div>
-            </div>
-          ) : null;
+            ) : null;
         })}
       </div>
     </div>
