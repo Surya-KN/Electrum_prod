@@ -10,6 +10,8 @@ export const AuthProvider = ({ children }) => {
     const userType = localStorage.getItem("userType");
     const previous_course = localStorage.getItem("previous_course");
     const previous_course_id = localStorage.getItem("previous_course_id");
+    const previous_course = localStorage.getItem("previous_course");
+    const previous_course_id = localStorage.getItem("previous_course_id");
     const userId = localStorage.getItem("userId");
     console.log(userType);
     console.log(token);
@@ -32,7 +34,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("previous_course", previous_course);
     localStorage.setItem("previous_course_id", previous_course_id);
     localStorage.setItem("userId", userId);
-    setUser({ token, userType, userId });
+    setUser({ token, userType, userId, previous_course, previous_course_id });
   };
 
   const logout = () => {
