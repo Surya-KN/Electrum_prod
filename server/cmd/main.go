@@ -19,7 +19,7 @@ func main() {
 	err := godotenv.Load("./config/.env")
 
 	if err != nil {
-		log.Fatal("could not load config file ")
+		log.Println("could not load config file ")
 	}
 	database.ConnectDB()
 	cache.SetupCache()

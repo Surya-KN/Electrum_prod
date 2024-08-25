@@ -12,7 +12,7 @@ const AdminSessionPage = () => {
   }, []);
 
   const fetchSessions = () => {
-    fetch("http://localhost:8000/session")
+    fetch("http://35.154.39.136:8000/session")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -34,7 +34,7 @@ const AdminSessionPage = () => {
   };
 
   const handleStartStop = (sessionName, action) => {
-    fetch(`http://localhost:8000/session/${sessionName}/${action}`, {
+    fetch(`http://35.154.39.136:8000/session/${sessionName}/${action}`, {
       method: "POST",
     })
       .then((response) => {

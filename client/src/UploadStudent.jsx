@@ -47,7 +47,7 @@ const UploadStudent = () => {
     formData.append("student", file);
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/student/upload", {
+      const response = await fetch("http://35.154.39.136:8000/api/v1/student/upload", {
         method: "POST",
         body: formData,
       });
