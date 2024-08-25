@@ -140,18 +140,47 @@ const EnrollmentPeriodCourses = () => {
       <h1 className="text-3xl font-bold mb-6 text-center text-indigo-800">
         Course Enrollment for {sessionName}
       </h1>
+      {enrolled && (
+        <div className="max-w-md mx-auto my-8 p-6 bg-blue-100 border-l-4 border-blue-500 text-blue-700 shadow-lg rounded-lg">
+          <div className="flex items-center">
+            <svg
+              className="w-6 h-6 mr-4 text-blue-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 13l4 4L19 7"
+              ></path>
+            </svg>
+            <div>
+              <h2 className="text-lg font-semibold">Enrollment Status</h2>
+              <p className="mt-1">
+                You have been enrolled to course{" "}
+                <span className="font-bold">{enrolled}</span>.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {courses.map((course) => {
              let shouldShowCourse = true;
 
              // Check conditions
-             if (course.Code === '23NHOP608' && user?.previous_course_id !== '23NHOP607') {
+             if (course.Code ===  user?.previous_course_id) {
                shouldShowCourse = false;
-             } else if (course.Code === '23NHOP611' && user?.previous_course_id !== '23NHOP614') {
+            } else if (course.Code === '23NHOP708' && user?.previous_course_id !== '23NHOP707') {
+                shouldShowCourse = false;
+             } else if (course.Code === '23NHOP714' && user?.previous_course_id !== '23NHOP711') {
                shouldShowCourse = false;
-             } else if (course.Code === '23NHOP604' && user?.userId?.includes("ME")) {
+             } else if (course.Code === '23NHOP704' && user?.userId?.includes("ME")) {
                shouldShowCourse = false;
-             } else if (course.Code === '23NHOP606' && user?.userId?.includes("EC")) {
+             } else if (course.Code === '23NHOP706' && user?.userId?.includes("EC")) {
                shouldShowCourse = false;
              }
              return shouldShowCourse ? (
@@ -161,11 +190,11 @@ const EnrollmentPeriodCourses = () => {
               >
                 <div className="p-6">
                   <h2 className="text-xl font-semibold mb-2 text-indigo-700">
-                    {course.Name}
+                    {course.Name.split("(")[0].trim()}
                   </h2>
                   <p className="text-gray-600 mb-1">Course Code: {course.Code}</p>
                   <p className="text-gray-600 mb-4">
-                    Department: {course.Department}
+                    Slot: <span className="text-black font-semibold">{course.Name.match(/\(([^)]+)\)/)[1]}</span>
                   </p>
                   <div className="mb-4">
                     <div className="flex justify-between items-center mb-1">

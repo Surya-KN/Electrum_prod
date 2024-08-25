@@ -22,7 +22,7 @@ const AdminSessionDashboard = () => {
   const { sessionName } = useParams();
 
   useEffect(() => {
-    fetch(`http://localhost:8000/session/details/${sessionName}`)
+    fetch(`http://35.154.39.136:8000/session/details/${sessionName}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -71,7 +71,7 @@ const AdminSessionDashboard = () => {
   const handleDownload = async (sessionName) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/session/${sessionName}/excel`,
+        `http://35.154.39.136:8000/session/${sessionName}/excel`,
         {
           method: "GET",
           headers: {
