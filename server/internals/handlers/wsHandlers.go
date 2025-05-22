@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/AaronDennis07/electrum/internals/cache"
 	"github.com/AaronDennis07/electrum/internals/ctx"
@@ -27,10 +28,12 @@ func EnrollmentSessionHandler(c *websocket.Conn) {
 
 			jsonMessage, err := json.Marshal(message)
 			if err != nil {
+				log.Printf("Error marshalling message to JSON: %v", err)
 				return
 			}
 
 			if err := c.WriteMessage(websocket.TextMessage, jsonMessage); err != nil {
+				log.Printf("Error writing message to websocket: %v", err)
 				return
 			} else {
 				fmt.Println(jsonMessage)

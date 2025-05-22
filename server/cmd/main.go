@@ -26,7 +26,8 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
+		AllowOrigins:     os.Getenv("FRONTEND_URL"), //"http://localhost:5173",
+		AllowCredentials: true,
 	}))
 
 	app.Use(logger.New())
@@ -35,17 +36,5 @@ func main() {
 	routers.SetupAuthRoutes(app)
 	routers.SetupSessionhRoutes(app)
 	routers.SetupStudentRoutes(app)
-	// app.Get("/ws/session/:session", websocket.New(handlers.SubscribeToSession)) //studnet
-	// app.Post("/session", handlers.CreateSession)
-	// app.Post("/session/:session/start", handlers.StartSession)
-	// app.Post("/session/:session/enroll", handlers.EnrollToCourse) //student
-	// app.Post("/session/:session/stop", handlers.StopSession)
-	// app.Get("/session", handlers.GetAllSessions) // Add this line
-	// app.Get("/session/:session", handlers.GetSession) //student
-	// app.Get("/sessiondetails/:session", handlers.GetSessionDetails)
-	// app.Get("/session/:session/excel", handlers.SendEnrollmentsExcel)
-	// app.Post("/session/:session/courseupload", handlers.UploadCourse)
-	// app.Post("/session/:session/upload", handlers.UploadData)
-	app.Post("/students/upload", handlers.UploadStudent)
 	log.Fatal(app.Listen(":8000"))
 }

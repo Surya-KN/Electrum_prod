@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -11,6 +12,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type StudentRegisterRequest struct {
@@ -49,12 +51,18 @@ func RegisterStudent(c *fiber.Ctx) error {
 	var student models.Student
 	result := db.Where("USN = ?", request.USN).First(&student)
 
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Student record not found. Please contact administrator."})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Database error"})
+	}
+
 	if !isPasswordEmpty(student) {
 		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"error": "Student already registered"})
-	} else if result.Error != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "No record found please contact the administrator"})
 	}
-	fmt.Println(student)
+
+	// If student record is found and password is not set, proceed with registration
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Cannot hash password"})
@@ -130,7 +138,7 @@ func LoginStudent(c *fiber.Ctx) error {
 
 		t, err := token.SignedString([]byte(secret))
 		if err != nil {
-			return c.SendStatus(fiber.StatusInternalServerError)
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to sign token"})
 		}
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"token": t, "department": student.Department.Name, "previous_course": student.PreviousCourse, "previous_course_id": student.PreviousCourseID})
 	}
@@ -163,7 +171,7 @@ func LoginAdmin(c *fiber.Ctx) error {
 
 		t, err := token.SignedString([]byte(secret))
 		if err != nil {
-			return c.SendStatus(fiber.StatusInternalServerError)
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to sign token"})
 		}
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"token": t})
 	}
